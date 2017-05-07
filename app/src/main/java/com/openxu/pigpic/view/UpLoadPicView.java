@@ -115,7 +115,7 @@ public class UpLoadPicView extends ImageView {
                 paint.setColor(Color.parseColor("#FF3E96"));
                 paint.setAlpha(255);
                 canvas.drawRoundRect(r2, 10, 10, paint);        //绘制圆角矩形
-                LogUtil.i(TAG, "绘制jindu "+r2);
+//                LogUtil.i(TAG, "绘制jindu "+r2);
                 String text = picBean.getProgress()+"%";
                 canvas.drawText(text, (getMeasuredWidth()-DensityUtil.getFontlength(tPahint, text))/2,
                         r2.bottom+DensityUtil.getFontLeading(tPahint)+12 ,tPahint);

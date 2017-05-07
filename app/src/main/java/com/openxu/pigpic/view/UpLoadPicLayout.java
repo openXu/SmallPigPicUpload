@@ -15,6 +15,7 @@ import com.openxu.pigpic.util.DensityUtil;
 import com.openxu.pigpic.util.LogUtil;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.Inflater;
 
 /**
@@ -59,14 +60,14 @@ public class UpLoadPicLayout extends ViewGroup {
                 UpLoadPicView picView = (UpLoadPicView)getChildAt(i);
                 if(pic.getName().equals(picView.getTag())){
                     picView.setViewData(pic);
-                    LogUtil.i(TAG, "刷新"+pic.getName()+"的进度");
+//                    LogUtil.i(TAG, "刷新"+pic.getName()+"的进度");
                 }
             }
         }
     }
 
     private ArrayList<UploadPic> picList;
-    public void setViewData(ArrayList<UploadPic> list){
+    public void setViewData(List<UploadPic> list){
         picList.clear();
         if(list!=null){
             picList.addAll(list);
@@ -121,7 +122,7 @@ public class UpLoadPicLayout extends ViewGroup {
         UploadPic firstPic = picList.get(0);
         UpLoadPicView view = new UpLoadPicView(getContext());
         view.setViewData(firstPic);
-        LogUtil.w(TAG, "设置第一个图片宽高："+firstItemW+"*"+firstItemH);
+//        LogUtil.w(TAG, "设置第一个图片宽高："+firstItemW+"*"+firstItemH);
         view.measure(firstItemW, firstItemH);
         // 确定子控件的位置，四个参数分别代表（左上右下）点的坐标值
         addView(view);

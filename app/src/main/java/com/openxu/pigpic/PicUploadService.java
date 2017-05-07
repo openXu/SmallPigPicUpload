@@ -50,7 +50,7 @@ public class PicUploadService extends Service {
             PicUploadService.this.callBack = callBack;
         }
 
-        public void addToUpload(String house_id, List<UploadPic> picList) throws RemoteException {
+        public void addToUpload(String house_id, List<UploadPic> picList){
             ArrayList<UploadPic> list = picMap.get(house_id);
             if(list==null){
                 list = new ArrayList();
@@ -63,7 +63,7 @@ public class PicUploadService extends Service {
             handler.sendEmptyMessage(0);
         }
 
-        public List<UploadPic> getUploadingList(String house_id) throws RemoteException {
+        public List<UploadPic> getUploadingList(String house_id){
             ArrayList<UploadPic> list = picMap.get(house_id);
             return list;
         }
@@ -146,29 +146,40 @@ public class PicUploadService extends Service {
                 .execute(new StringCallback() {
                     @Override
                     public void onBefore(Request request) {
-
+                        pic.setProgress(0);
+                        pic.setStatus(UploadPic.STATUS_UPLODING);
                         super.onBefore(request);
                     }
 
                     @Override
                     public void inProgress(float progress) {
                         super.inProgress(progress);
-                        pic.setProgress(progress);
+                        int pro = (int)(progress*100);
+                        pic.setProgress(pro);
                         if(callBack!=null)
                             callBack.refreshPicPro(pic);
-//                        LogUtil.v(TAG, "房源＝" + house_id + "的第" + key + "张图" + pic.getName() + "上传进度" + progress);
+//                        LogUtil.v(TAG, "房源＝" + house_id + "的第" + key + "张图" + pic.getName() + "上传进度" + pro);
 //                        uploadDialog.setUploadingText((int) (progress * 100) + "%");
                     }
 
                     @Override
                     public void onError(Call call, Exception e) {
                         allSucc = false;
+                        pic.setProgress(0);
+                        pic.setStatus(UploadPic.STATUS_FAIL);
                         LogUtil.e(TAG, "上传失败" + e.getMessage());
+                        if(callBack!=null)
+                            callBack.refreshPicPro(pic);
                     }
 
                     @Override
                     public void onResponse(String response) {
                         LogUtil.i(TAG, "上传成功：" + response);
+                        //{"code":200,"datas":{"msg":"\u4e0a\u4f20-\u6210\u529f","image_url":"http:\/\/text.ddlife.club\/data\/house\/20170406\/2448\/2448_70268935482.png"}}
+                        pic.setProgress(100);
+                        pic.setStatus(UploadPic.STATUS_SUCC);
+                        if(callBack!=null)
+                            callBack.refreshPicPro(pic);
                        /* if (!TextUtils.isEmpty(response)) {
                             // Json解析
                             String jsonResult = response;

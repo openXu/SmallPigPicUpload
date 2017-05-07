@@ -19,7 +19,7 @@ public class UploadPic implements Parcelable {
     public static final int STATUS_FAIL = 2;
     public static final int STATUS_SUCC = 3;
     private int status;
-    private float progress;
+    private int progress;
     private String name;
     private String path;
 
@@ -47,11 +47,11 @@ public class UploadPic implements Parcelable {
         this.path = path;
     }
 
-    public float getProgress() {
+    public int getProgress() {
         return progress;
     }
 
-    public void setProgress(float progress) {
+    public void setProgress(int progress) {
         this.progress = progress;
     }
 
@@ -66,14 +66,14 @@ public class UploadPic implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(this.status);
-        dest.writeFloat(this.progress);
+        dest.writeInt(this.progress);
         dest.writeString(this.name);
         dest.writeString(this.path);
     }
 
     protected UploadPic(Parcel in) {
         this.status = in.readInt();
-        this.progress = in.readFloat();
+        this.progress = in.readInt();
         this.name = in.readString();
         this.path = in.readString();
     }

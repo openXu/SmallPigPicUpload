@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="45dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:background="#11000000">
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:src="@drawable/back"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:text="添加照片"/>
+        <TextView
+            android:id="@+id/tv_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:textSize="14sp"
+            android:textColor="#000000"
+            android:text="编辑"/>
+    </RelativeLayout>
+
+    <ScrollView
+        android:fillViewport="true"
+        android:layout_above="@+id/tv_addpic"
+        android:layout_below="@+id/rl_title"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <com.openxu.pigpic.view.UpLoadPicLayout
+            android:id="@+id/pic_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </com.openxu.pigpic.view.UpLoadPicLayout>
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/tv_addpic"
+        android:layout_width="match_parent"
+        android:layout_height="45dip"
+        android:background="@drawable/choosepic_btn_selector"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:textSize="15sp"
+        android:textColor="#ffffff"
+        android:text="添加照片"/>
+
+
+    <!--选择栏-->
+    <LinearLayout
+        android:id="@+id/ll_choosepic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"
+        android:background="#DCDCDC"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_choosepic_1"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:background="#ffffff"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:text="相册"/>
+        <TextView
+            android:id="@+id/tv_choosepic_2"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:background="#ffffff"
+            android:layout_marginTop="1sp"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:text="拍照"/>
+        <TextView
+            android:id="@+id/tv_choosepic_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="#F5F5F5"
+            android:layout_marginTop="1sp"
+            android:gravity="center"
+            android:textSize="15sp"
+            android:textColor="#000000"
+            android:text="取消"/>
+    </LinearLayout>
+
+</RelativeLayout>

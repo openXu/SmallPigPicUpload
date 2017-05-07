@@ -6,13 +6,15 @@
     <RelativeLayout
         android:id="@+id/rl_title"
         android:layout_width="match_parent"
-        android:layout_height="50dip">
+        android:layout_height="45dip"
+        android:paddingLeft="15dip"
+        android:paddingRight="15dip"
+        android:background="#11000000">
         <ImageView
             android:id="@+id/iv_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="15dip"
             android:src="@drawable/back"/>
         <TextView
             android:layout_width="wrap_content"
