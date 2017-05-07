@@ -3,4 +3,12 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <!--选择图片－预览字体颜色-->
+    <color name="choosepic_scantext_enable">#FF3E96</color>
+    <color name="choosepic_scantext_unenable">#d0d0d0</color>
+    <!--选择图片－上传按钮背景色-->
+    <color name="choosepic_btn_nomal">#FF3E96</color>
+    <color name="choosepic_btn_press">#FF3E96</color>
+    <color name="choosepic_btn_unenable">#d0d0d0</color>
 </resources>

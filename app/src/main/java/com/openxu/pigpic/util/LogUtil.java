@@ -41,7 +41,7 @@ public class LogUtil {
     public static void e(String tag, String msg) {
         if (mIsShowLog){
         	msg=formNull(msg);
-        	 Log.e(tag, msg);
+        	Log.e(tag, msg);
         }
            
     }

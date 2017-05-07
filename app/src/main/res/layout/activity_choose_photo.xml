@@ -1,66 +1,77 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
-    <com.openxu.pigpic.view.TitleLayout
-        android:id="@+id/photo_title"
+    <RelativeLayout
+        android:id="@+id/rl_title"
         android:layout_width="match_parent"
-        android:layout_height="50dip" />
+        android:layout_height="50dip">
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dip"
+            android:src="@drawable/back"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:textColor="#000000"
+            android:text="照片"/>
+    </RelativeLayout>
 
     <GridView
         android:id="@+id/gridview"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/photo_title"
-        android:horizontalSpacing="2dip"
-        android:numColumns="3"
-        android:verticalSpacing="2dip" />
+        android:layout_below="@id/rl_title"
+        android:layout_above="@+id/visi_layout"
+        android:layout_margin="4dp"
+        android:numColumns="4"
+        android:horizontalSpacing="4dip"
+        android:verticalSpacing="4dip" />
 
     <RelativeLayout
         android:id="@+id/visi_layout"
         android:layout_width="match_parent"
         android:layout_height="50dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="10dip"
         android:layout_alignParentBottom="true"
-        android:background="#bb000000" >
+        android:background="#ffffff" >
 
         <TextView
-            android:id="@+id/group_text"
+            android:id="@+id/tv_scan"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:gravity="center_vertical"
             android:paddingLeft="10dip"
-            android:text="所有图片"
+            android:textSize="13sp"
+            android:text="预览"
             android:textColor="@android:color/white" />
 
         <TextView
-            android:id="@+id/total_text"
-            android:layout_width="50dip"
-            android:layout_height="match_parent"
+            android:id="@+id/tv_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dip"
+            android:paddingBottom="5dip"
+            android:paddingLeft="12dip"
+            android:paddingRight="12dip"
+            android:background="@drawable/choosepic_btn_selector"
+            android:enabled="false"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:gravity="center"
-            android:text="0张"
+            android:textSize="13sp"
+            android:text="上传"
             android:textColor="@android:color/white" />
     </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/list_layout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/visi_layout"
-        android:background="#e0000000"
-        android:paddingTop="50dip"
-        android:visibility="gone" >
-
-            <ListView
-                android:id="@+id/group_listview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@android:color/white" />
-        </RelativeLayout>
 
 </RelativeLayout>
