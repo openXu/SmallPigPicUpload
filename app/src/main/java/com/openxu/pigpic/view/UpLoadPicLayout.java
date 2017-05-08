@@ -26,7 +26,6 @@ import java.util.zip.Inflater;
  */
 public class UpLoadPicLayout extends ViewGroup {
 
-
     private String TAG = "UpLoadPicLayout";
     private int firstItemW;
     private int firstItemH = 150;
@@ -53,17 +52,32 @@ public class UpLoadPicLayout extends ViewGroup {
         space = DensityUtil.dip2px(getContext(), space);
     }
 
-    public void refreshChild(UploadPic pic){
+    public void setEditStatus(int status){
         int count = getChildCount();
         if(count>0){
             for(int i =0; i<count; i++){
                 UpLoadPicView picView = (UpLoadPicView)getChildAt(i);
-                if(pic.getName().equals(picView.getTag())){
+                picView.setStatus(status);
+            }
+        }
+    }
+    public void refreshChild(UploadPic pic){
+//        LogUtil.i(TAG, "刷新"+pic.getKey()+"的进度");
+        int count = getChildCount();
+        if(count>0){
+            for(int i =0; i<count; i++){
+                UpLoadPicView picView = (UpLoadPicView)getChildAt(i);
+                if(pic.getKey()==(int)picView.getTag()){
                     picView.setViewData(pic);
 //                    LogUtil.i(TAG, "刷新"+pic.getName()+"的进度");
                 }
             }
         }
+    }
+
+    public int getPicCount(){
+        LogUtil.i(TAG, "现在已经添加的照片数量："+picList.size());
+        return picList.size();
     }
 
     private ArrayList<UploadPic> picList;
@@ -87,7 +101,7 @@ public class UpLoadPicLayout extends ViewGroup {
                 }
             }
         }
-
+        getParent().requestLayout();
         invalidate();
         requestLayout();
     }

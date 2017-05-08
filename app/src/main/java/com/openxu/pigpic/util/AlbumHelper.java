@@ -43,11 +43,6 @@ public class AlbumHelper {
 		return instance;
 	}
 
-	/**
-	 * ��ʼ��
-	 * 
-	 * @param context
-	 */
 	public void init(Context context) {
 		if (this.context == null) {
 			this.context = context;
@@ -99,9 +94,6 @@ public class AlbumHelper {
 		}
 	}
 
-	/**
-	 * �õ�ԭͼ
-	 */
 	void getAlbum() {
 		String[] projection = { Albums._ID, Albums.ALBUM, Albums.ALBUM_ART,
 				Albums.ALBUM_KEY, Albums.ARTIST, Albums.NUMBER_OF_SONGS };
@@ -110,12 +102,6 @@ public class AlbumHelper {
 		getAlbumColumnData(cursor);
 
 	}
-
-	/**
-	 * �ӱ�����ݿ��еõ�ԭͼ
-	 * 
-	 * @param cur
-	 */
 	private void getAlbumColumnData(Cursor cur) {
 		if (cur.moveToFirst()) {
 			int _id;
@@ -159,14 +145,8 @@ public class AlbumHelper {
 		}
 	}
 
-	/**
-	 * �Ƿ񴴽���ͼƬ��
-	 */
 	boolean hasBuildImagesBucketList = false;
 
-	/**
-	 * �õ�ͼƬ��
-	 */
 	void buildImagesBucketList() {
 		LogUtil.d(TAG, ">>>>开始查找图片");
 		long startTime = System.currentTimeMillis();
@@ -247,12 +227,6 @@ public class AlbumHelper {
 		LogUtil.v(TAG, "<<<<查找图片完毕，总耗时: " + (endTime - startTime) + " ms");
 	}
 
-	/**
-	 * �õ�ͼƬ��
-	 * 
-	 * @param refresh
-	 * @return
-	 */
 	public List<ImageBucket> getImagesBucketList(boolean refresh) {
 		if (refresh || (!refresh && !hasBuildImagesBucketList)) {
 			buildImagesBucketList();
@@ -267,12 +241,6 @@ public class AlbumHelper {
 		return tmpList;
 	}
 
-	/**
-	 * �õ�ԭʼͼ��·��
-	 * 
-	 * @param image_id
-	 * @return
-	 */
 	String getOriginalImagePath(String image_id) {
 		String path = null;
 		Log.i(TAG, "---(^o^)----" + image_id);

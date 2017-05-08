@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:padding="20dip"
     android:orientation="vertical">
-<!--"house_id": "2448", "house_id": "2553",  "house_id": "2554",
+<!--2698,2697,2696
 -->
     <TextView
         android:id="@+id/tv_1"
@@ -14,7 +14,7 @@
         android:gravity="center"
         android:textSize="15sp"
         android:textColor="#ffffff"
-        android:text="house_id=2448"/>
+        android:text="house_id=2698"/>
     <TextView
         android:id="@+id/tv_2"
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
         android:gravity="center"
         android:textSize="15sp"
         android:textColor="#ffffff"
-        android:text="house_id=2553"/>
+        android:text="house_id=2697"/>
     <TextView
         android:id="@+id/tv_3"
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
         android:gravity="center"
         android:textSize="15sp"
         android:textColor="#ffffff"
-        android:text="house_id=2554"/>
+        android:text="house_id=2696"/>
 
 
 </LinearLayout>

@@ -3,8 +3,6 @@ package com.openxu.pigpic.util;
 /**
  * author : openXu
  * created time : 17/5/7 下午2:24
- * blog : http://blog.csdn.net/xmxkf
- * github : http://blog.csdn.net/xmxkf
  * class name : Url
  * discription :
  */

@@ -7,8 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,10 +39,17 @@ public class UpLoadPicView extends ImageView {
 
     private Paint paint, tPahint;
 
-    private Bitmap failBit;
+    private Bitmap failBit, delBit;
 
+    private int delIconSize = 18;
     private int proHight = 3;
     private int textSize = 10;  //sp
+
+    public static int STATUS_SHOW = 1;
+    public static int STATUS_EIDT = 2;
+    public int status = STATUS_SHOW;   //控件状态
+
+    public RectF delRect;
 
     public UpLoadPicView(Context context) {
         this(context, null);
@@ -57,7 +66,9 @@ public class UpLoadPicView extends ImageView {
         setScaleType(ScaleType.CENTER_CROP);
 
         failBit = BitmapFactory.decodeResource(getResources(), R.drawable.choosepic_icon_def);
+        delBit = BitmapFactory.decodeResource(getResources(), R.drawable.uploadpic_icon_del);
 
+        delIconSize = DensityUtil.dip2px(getContext(), delIconSize);
         proHight = DensityUtil.dip2px(getContext(), proHight);
         textSize = DensityUtil.dip2px(getContext(), textSize);
 
@@ -67,12 +78,30 @@ public class UpLoadPicView extends ImageView {
         tPahint.setAntiAlias(true);
         tPahint.setColor(Color.WHITE);
         tPahint.setTextSize(textSize);
+
     }
 
     public void setViewData(UploadPic pic){
         picBean = pic;
-        setTag(picBean.getName());
-        ImageLoader.getInstance().displayImage("file://" + picBean.getPath(), this);
+        setTag(picBean.getKey());
+        if(!TextUtils.isEmpty(picBean.getUrl())){
+            //从服务器上获取的图片
+            picBean.setStatus(UploadPic.STATUS_SUCC);
+            ImageLoader.getInstance().displayImage(picBean.getUrl(), this);
+//            LogUtil.v(TAG, "展示服务器上图片:"+picBean.getUrl());
+        }else{
+            ImageLoader.getInstance().displayImage("file://" + picBean.getPath(), this);
+        }
+
+        invalidate();
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
         invalidate();
     }
 
@@ -82,9 +111,32 @@ public class UpLoadPicView extends ImageView {
         int width = MeasureSpec. getSize(widthMeasureSpec);
         int height = MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(width, height);
+        delRect = new RectF();
+        delRect.left=getMeasuredWidth()-delIconSize -15;                          //左边
+        delRect.top= 15;     //上边
+        delRect.right=getMeasuredWidth() -15;              //右边
+        delRect.bottom=delIconSize + 15;  //下边
 //        LogUtil.i(TAG, "图片空间宽高："+getMeasuredWidth()+"*"+getMeasuredHeight());
-        if(picBean!=null)
-            ImageLoader.getInstance().displayImage("file://" + picBean.getPath(), this);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(event.getAction() == MotionEvent.ACTION_UP){
+            float x = event.getX();
+            float y = event.getY();
+            LogUtil.i(TAG, "点击："+x+"  "+y);
+            if(status == STATUS_EIDT){
+                if(delRect.contains(x,y)){
+                    LogUtil.i(TAG, "在减号范围内");
+                    //删除
+                    return true;
+                }
+            }else if(picBean.getStatus()==UploadPic.STATUS_FAIL){
+                //重新上传
+                return true;
+            }
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -126,9 +178,15 @@ public class UpLoadPicView extends ImageView {
                 paint.setColor(Color.BLACK);
                 paint.setAlpha(200);
                 canvas.drawRect(0,0,getWidth(),getHeight(),paint);
-                canvas.drawBitmap(failBit, (getWidth()-failBit.getWidth()/2),
+                canvas.drawBitmap(failBit, (getWidth()-failBit.getWidth())/2,
                         (getHeight()-failBit.getHeight())/2, paint);
                 break;
+        }
+
+        //编辑状态
+        if(this.status == STATUS_EIDT){
+            //绘制减号
+            canvas.drawBitmap(delBit, null, delRect, paint);
         }
     }
 }

@@ -14,15 +14,13 @@ import java.util.List;
 /**
  * author : openXu
  * created time : 17/5/6 下午1:12
- * blog : http://blog.csdn.net/xmxkf
- * github : http://blog.csdn.net/xmxkf
- * class name : sddsds
- * discription :
+ * class name : BitmapUtils
+ * discription : 图片压缩工具
  */
-public class PicUtils {
+public class BitmapUtils {
 
 
-    private static String TAG = "PicUtils";
+    private static String TAG = "BitmapUtils";
     private static String tempDirPath;
     //压缩图片后的集合
     private static ArrayList<String> compressPics = new ArrayList<>();

@@ -1,20 +1,9 @@
 package com.openxu.pigpic.bean;
 
 public class ImageBean{
-	/**
-	 * �ļ��еĵ�һ��ͼƬ·��
-	 */
 	private String topImagePath;
-	/**
-	 * �ļ�����
-	 */
-	private String folderName; 
-	/**
-	 * �ļ����е�ͼƬ��
-	 */
+	private String folderName;
 	private int imageCounts;
-	
-	//���ļ��е�·��
 	private String  fa_filepath;
 	
 	public String getTopImagePath() {

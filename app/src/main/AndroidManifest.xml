@@ -25,7 +25,7 @@
         <activity android:name=".UploadPicActivity"/>
         <activity android:name=".ChoosePhotoActivity"/>
         <activity android:name=".PicScanActivity"/>
-        <service android:name=".PicUploadService"/>
+        <service android:name=".service.PicUploadService"/>
     </application>
 
 </manifest>

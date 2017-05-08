@@ -9,7 +9,7 @@ import com.openxu.pigpic.bean.UploadPic;
  * author : openXu
  * created time : 17/5/7 下午12:18
  * class name : UploadCallBack
- * discription :
+ * discription : service中图片上传状态变化时刷新view的回调
  */
 public interface UploadCallBack{
 

@@ -1,4 +1,4 @@
-package com.openxu.pigpic;
+package com.openxu.pigpic.service;
 
 import android.app.Service;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Message;
-import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 
@@ -15,7 +14,6 @@ import com.openxu.pigpic.callback.UploadCallBack;
 import com.openxu.pigpic.util.LogUtil;
 import com.openxu.pigpic.util.Url;
 import com.zhy.http.okhttp.OkHttpUtils;
-import com.zhy.http.okhttp.builder.PostFormBuilder;
 import com.zhy.http.okhttp.callback.StringCallback;
 
 import org.json.JSONException;
@@ -26,7 +24,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.LogRecord;
 
 import okhttp3.Call;
 import okhttp3.Request;
@@ -34,8 +31,6 @@ import okhttp3.Request;
 /**
  * author : openXu
  * created time : 17/5/7 上午12:45
- * blog : http://blog.csdn.net/xmxkf
- * github : http://blog.csdn.net/xmxkf
  * class name : PicUploadService
  * discription :
  */
@@ -51,20 +46,24 @@ public class PicUploadService extends Service {
         }
 
         public void addToUpload(String house_id, List<UploadPic> picList){
-            ArrayList<UploadPic> list = picMap.get(house_id);
-            if(list==null){
-                list = new ArrayList();
-            }
-            list.addAll(picList);
-            picMap.put(house_id, list);
-            if(!idList.contains(house_id)){
-                idList.add(house_id);
+            if(picList!=null){
+                picQue.addAll(picList);
             }
             handler.sendEmptyMessage(0);
         }
 
-        public List<UploadPic> getUploadingList(String house_id){
-            ArrayList<UploadPic> list = picMap.get(house_id);
+        /**
+         * 获取正在队列中等待上传的图片对象集合（包含上传失败的）
+         * @param house_id
+         * @return
+         */
+        public ArrayList<UploadPic> getUploadingList(String house_id){
+            ArrayList<UploadPic> list = new ArrayList<>();
+            for(UploadPic picItem : picQue){
+                if(picItem.getHouse_id().equals(house_id)){
+                    list.add(picItem);
+                }
+            }
             return list;
         }
     }
@@ -78,18 +77,14 @@ public class PicUploadService extends Service {
 
 
     private boolean isUploading = false;
-    private Map<String, ArrayList<UploadPic>> picMap;
-    private List<String> idList;
-    private int index1 = 0;   //当前上传的房源的索引
-    private int index2 = 0;   //当前上传的房源的索引
-    private boolean allSucc = true;   //某一个房源的图片是否全部上传成功
+    private ArrayList<UploadPic> picQue;
+    private int index = 0;
 
     @Override
     public void onCreate() {
         super.onCreate();
         binder = new ServiceBinder();
-        picMap = new HashMap<>();
-        idList = new ArrayList<>();
+        picQue = new ArrayList<>();
         handler.sendEmptyMessage(0);
     }
 
@@ -97,7 +92,22 @@ public class PicUploadService extends Service {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what==0 && !isUploading){
-                if(idList!=null && idList.size()>0 && index1<idList.size()){
+                if(picQue.size()>0 &&  index<picQue.size()){
+                    UploadPic pic = picQue.get(index);
+                    //如果上传成功的，上传下一个
+                    if(pic.getStatus()==UploadPic.STATUS_SUCC){
+                        picQue.remove(index);
+                        handler.sendEmptyMessage(0);
+                        return;
+                    }
+                    uploadPic(pic);
+                    LogUtil.w(TAG, "开始上传house_id＝"+pic.getHouse_id()+"的"+pic.getPath());
+                }else{
+                    LogUtil.e(TAG, "一轮上传完毕了");
+                    index = 0;
+                }
+/*
+                if(index.size()>0 && index1<idList.size()){
                     String house_id = idList.get(index1);
                     ArrayList<UploadPic> picList = picMap.get(house_id);
                     if(picList!=null && picList.size()>0 && index2<picList.size()){
@@ -123,20 +133,20 @@ public class PicUploadService extends Service {
                     index1 =0;
 //                    handler.sendEmptyMessage(0);
                     LogUtil.w(TAG, "所有房源图片上传完毕");
-                }
+                }*/
             }
         }
     };
 
 
-    private void upload(final String house_id, final String key, final UploadPic pic) {
+    private void uploadPic(final UploadPic pic) {
 
         isUploading = true;
 
         Map<String, String> params = new HashMap<>();
         String url = Url.URL_PIC_UPLOAD;
-        params.put("house_id", house_id);   //房源id
-        params.put("key", key);    //图片键值 上传第一图值0 第二张为1 第三张为 2 以此类推
+        params.put("house_id", pic.getHouse_id());   //房源id
+        params.put("key", pic.getKey()+"");    //图片键值 上传第一图值0 第二张为1 第三张为 2 以此类推
 //        params.put("image", pic.getName());    // 上传图片标识名
         OkHttpUtils.post()
                 .url(url)
@@ -155,6 +165,9 @@ public class PicUploadService extends Service {
                     public void inProgress(float progress) {
                         super.inProgress(progress);
                         int pro = (int)(progress*100);
+                        if(pro>=100){
+                            pro = 98;
+                        }
                         pic.setProgress(pro);
                         if(callBack!=null)
                             callBack.refreshPicPro(pic);
@@ -164,7 +177,6 @@ public class PicUploadService extends Service {
 
                     @Override
                     public void onError(Call call, Exception e) {
-                        allSucc = false;
                         pic.setProgress(0);
                         pic.setStatus(UploadPic.STATUS_FAIL);
                         LogUtil.e(TAG, "上传失败" + e.getMessage());
@@ -174,37 +186,42 @@ public class PicUploadService extends Service {
 
                     @Override
                     public void onResponse(String response) {
-                        LogUtil.i(TAG, "上传成功：" + response);
                         //{"code":200,"datas":{"msg":"\u4e0a\u4f20-\u6210\u529f","image_url":"http:\/\/text.ddlife.club\/data\/house\/20170406\/2448\/2448_70268935482.png"}}
-                        pic.setProgress(100);
-                        pic.setStatus(UploadPic.STATUS_SUCC);
+                        if (!TextUtils.isEmpty(response)) {
+                            try {
+                                JSONObject jOb = new JSONObject(response);
+                                int code = jOb.optInt("code");
+                                if (code == 200) {
+                                    LogUtil.i(TAG, "上传成功：" + response);
+                                    pic.setProgress(100);
+                                    pic.setStatus(UploadPic.STATUS_SUCC);
+                                    if(callBack!=null)
+                                        callBack.refreshPicPro(pic);
+                                    return;
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                        pic.setProgress(0);
+                        pic.setStatus(UploadPic.STATUS_FAIL);
+                        LogUtil.e(TAG, "上传失败" +response);
                         if(callBack!=null)
                             callBack.refreshPicPro(pic);
-                       /* if (!TextUtils.isEmpty(response)) {
-                            // Json解析
-                            String jsonResult = response;
-                            if (!TextUtils.isEmpty(jsonResult)) {
-                                try {
-                                    JSONObject jOb = new JSONObject(jsonResult);
-                                    int result = jOb.optInt("result");
-                                    String msg = jOb.optString("msg");
-                                    ToastAlone.show(msg);
-                                    if (result == 1) {
-                                        clearPic();
-                                    }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                ToastAlone.show("上传失败");
-                            }
-                        }*/
                     }
 
                     @Override
                     public void onAfter() {
                         super.onAfter();
                         isUploading = false;
+                        if(pic.getStatus()==UploadPic.STATUS_SUCC){
+                            //上传成功只需要将成功的移除，索引自然就对应下一个了
+                            picQue.remove(index);
+                        }else{
+                            //上传失败后上传下一个
+                            index++;
+                        }
                         handler.sendEmptyMessage(0);
                     }
                 });

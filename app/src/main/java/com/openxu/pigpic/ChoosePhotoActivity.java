@@ -51,7 +51,7 @@ import java.util.Map;
  * class describe：选择相片
  *
  */
-public class ChoosePhotoActivity extends Activity implements View.OnClickListener{
+public class ChoosePhotoActivity extends UploadPicBaseActivity implements View.OnClickListener{
 	private String TAG = "ChoosePhotoActivity";
 
 	private Context mContext;
