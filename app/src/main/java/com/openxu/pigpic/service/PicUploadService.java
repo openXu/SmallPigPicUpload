@@ -66,6 +66,22 @@ public class PicUploadService extends Service {
             }
             return list;
         }
+
+        public void deletePic(UploadPic pic){
+            for(int i = 0 ;i <picQue.size(); i++){
+                UploadPic picItem = picQue.get(i);
+                if(picItem.getHouse_id().equals(pic.getHouse_id())
+                        && picItem.getKey() == pic.getKey()){
+                    if(i>index){
+
+                    }else{
+                        index -=1;
+                    }
+                    picQue.remove(i);
+                    break;
+                }
+            }
+        }
     }
 
     private ServiceBinder binder;

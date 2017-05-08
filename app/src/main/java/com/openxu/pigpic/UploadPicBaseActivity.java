@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
@@ -48,6 +49,7 @@ import static com.openxu.pigpic.UploadPicActivity.CATCH_DIR;
 public class UploadPicBaseActivity extends Activity{
 
     protected String TAG ;
+    protected Context mContext ;
 
     /*缓存根目录*/
     protected static final String CATCH_DIR = Environment
@@ -64,6 +66,7 @@ public class UploadPicBaseActivity extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         TAG = getClass().getSimpleName();
+        mContext = this;
         //创建wgh根目录
         File wghFile = new File(CATCH_DIR);
         if (!wghFile.exists() && !wghFile.isDirectory()) {

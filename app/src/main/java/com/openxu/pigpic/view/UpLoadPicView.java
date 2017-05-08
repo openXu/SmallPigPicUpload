@@ -7,8 +7,10 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.view.MotionEventCompat;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -20,6 +22,7 @@ import android.widget.RelativeLayout;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.openxu.pigpic.R;
 import com.openxu.pigpic.bean.UploadPic;
+import com.openxu.pigpic.callback.ImageViewEventCallBack;
 import com.openxu.pigpic.util.DensityUtil;
 import com.openxu.pigpic.util.LogUtil;
 
@@ -50,6 +53,8 @@ public class UpLoadPicView extends ImageView {
     public int status = STATUS_SHOW;   //控件状态
 
     public RectF delRect;
+
+    private ImageViewEventCallBack eventCallBack;
 
     public UpLoadPicView(Context context) {
         this(context, null);
@@ -100,6 +105,10 @@ public class UpLoadPicView extends ImageView {
         return status;
     }
 
+
+    public void setEventCallBack(ImageViewEventCallBack callBack) {
+        this.eventCallBack = callBack;
+    }
     public void setStatus(int status) {
         this.status = status;
         invalidate();
@@ -121,22 +130,27 @@ public class UpLoadPicView extends ImageView {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(event.getAction() == MotionEvent.ACTION_UP){
+        int action = MotionEventCompat.getActionMasked(event);
+        if(action == MotionEvent.ACTION_UP){
             float x = event.getX();
             float y = event.getY();
-            LogUtil.i(TAG, "点击："+x+"  "+y);
             if(status == STATUS_EIDT){
                 if(delRect.contains(x,y)){
-                    LogUtil.i(TAG, "在减号范围内");
+
                     //删除
-                    return true;
+//                    LogUtil.i(TAG, eventCallBack+"删除"+picBean);
+                    if(eventCallBack!=null) {
+                        eventCallBack.onDelete(picBean);
+                    }
                 }
             }else if(picBean.getStatus()==UploadPic.STATUS_FAIL){
-                //重新上传
+                if(eventCallBack!=null)
+                    eventCallBack.onDelete(picBean);
+//                LogUtil.i(TAG, "重新上传"+picBean);
                 return true;
             }
         }
-        return super.onTouchEvent(event);
+        return true;
     }
 
     @Override

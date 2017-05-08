@@ -11,6 +11,7 @@ import android.widget.ScrollView;
 
 import com.openxu.pigpic.R;
 import com.openxu.pigpic.bean.UploadPic;
+import com.openxu.pigpic.callback.ImageViewEventCallBack;
 import com.openxu.pigpic.util.DensityUtil;
 import com.openxu.pigpic.util.LogUtil;
 
@@ -51,7 +52,10 @@ public class UpLoadPicLayout extends ViewGroup {
         firstItemH = DensityUtil.dip2px(getContext(), firstItemH);
         space = DensityUtil.dip2px(getContext(), space);
     }
-
+    private ImageViewEventCallBack eventCallBack;
+    public void setEventCallBack(ImageViewEventCallBack callBack){
+        this.eventCallBack = callBack;
+    }
     public void setEditStatus(int status){
         int count = getChildCount();
         if(count>0){
@@ -135,6 +139,7 @@ public class UpLoadPicLayout extends ViewGroup {
         int top = 0;
         UploadPic firstPic = picList.get(0);
         UpLoadPicView view = new UpLoadPicView(getContext());
+        view.setEventCallBack(eventCallBack);
         view.setViewData(firstPic);
 //        LogUtil.w(TAG, "设置第一个图片宽高："+firstItemW+"*"+firstItemH);
         view.measure(firstItemW, firstItemH);
@@ -148,6 +153,7 @@ public class UpLoadPicLayout extends ViewGroup {
         for(int j = 1; j<picList.size(); j++){
             UploadPic pic = picList.get(j);
             view = new UpLoadPicView(getContext());
+            view.setEventCallBack(eventCallBack);
             view.setViewData(pic);
 //            LogUtil.w(TAG, "设置图片宽高："+itemWH+"*"+itemWH);
             view.measure(itemWH, itemWH);

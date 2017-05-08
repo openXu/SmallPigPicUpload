@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.openxu.pigpic.bean.UploadPic;
+import com.openxu.pigpic.callback.ImageViewEventCallBack;
 import com.openxu.pigpic.callback.UploadCallBack;
 import com.openxu.pigpic.service.PicUploadService;
 import com.openxu.pigpic.util.LogUtil;
@@ -85,6 +86,21 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
         tv_choosepic_1.setOnClickListener(this);
         tv_choosepic_2.setOnClickListener(this);
         tv_choosepic_cancel.setOnClickListener(this);
+        pic_layout.setEventCallBack(new ImageViewEventCallBack() {
+            @Override
+            public void onDelete(UploadPic pic) {
+                //删除
+                if(servie!=null){
+                    servie.deletePic(pic);
+                }
+                deletePic(pic);
+            }
+
+            @Override
+            public void onReUpload(UploadPic pic) {
+                //重新上传
+            }
+        });
 
         house_id = getIntent().getStringExtra("house_id");
 
@@ -192,7 +208,7 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
                                 int code = jOb.optInt("code");
                                 String datas = jOb.optString("datas");
                                 jOb = new JSONObject(datas);
-                                String house_figure = jOb.optString("house_figure");
+                                String house_figure = jOb.optString("data_figure");
                                 Type type = new TypeToken<ArrayList<UploadPic>>()
                                 {}.getType();
                                 netPicList = new Gson().fromJson(house_figure, type);
@@ -359,9 +375,6 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
                     .setCancelable(false)
                     .show();
         }
-
-
-
     }
     /**
      * 将图片集合添加到上传队列，并刷新界面
@@ -394,11 +407,13 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         if(servie!=null){
+            servie.setCallBack(null);
             //解绑服务
             unbindService(serviceConnection);
         }
+        pic_layout.setEventCallBack(null);
+        super.onDestroy();
     }
 
     /**
@@ -428,6 +443,62 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
         }
 
     }*/
+
+
+    private void deletePic(final UploadPic pic) {
+        Map<String, String> params = new HashMap<>();
+        params.put("house_id", house_id);   //房源id
+        params.put("key", pic.getKey()+"");
+        OkHttpUtils.get()
+                .url(Url.URL_PIC_DEL)
+                .params(params)
+                .build()
+                .execute(new StringCallback() {
+                    @Override
+                    public void onBefore(Request request) {
+                        super.onBefore(request);
+                    }
+                    @Override
+                    public void onError(Call call, Exception e) {
+                        LogUtil.e(TAG, "删除图片失败" + e.getMessage());
+                        Toast.makeText(mContext, "删除图片失败" + e.getMessage(),Toast.LENGTH_SHORT).show();
+                    }
+                    @Override
+                    public void onResponse(String response) {
+                        LogUtil.i(TAG, "删除图片成功：" + response);
+                        if (!TextUtils.isEmpty(response)) {
+                            for(UploadPic picItem : netPicList){
+                                if(picItem.getKey() == pic.getKey()){
+                                    netPicList.remove(picItem);
+                                    return;
+                                }
+                            }
+
+/*
+                            try {
+                                JSONObject jOb = new JSONObject(response);
+                                int code = jOb.optInt("code");
+                                String datas = jOb.optString("datas");
+                                jOb = new JSONObject(datas);
+                                String house_figure = jOb.optString("data_figure");
+                                Type type = new TypeToken<ArrayList<UploadPic>>()
+                                {}.getType();
+                                netPicList = new Gson().fromJson(house_figure, type);
+                                LogUtil.i(TAG, "返回图片："+netPicList);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+*/
+                        }
+                    }
+
+                    @Override
+                    public void onAfter() {
+                        super.onAfter();
+                        mergeNetLocalList();
+                    }
+                });
+    }
 
 
 

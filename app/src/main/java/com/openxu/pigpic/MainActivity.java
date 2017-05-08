@@ -6,11 +6,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.cache.disc.naming.HashCodeFileNameGenerator;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 import com.openxu.pigpic.service.PicUploadService;
 
 /**
@@ -46,15 +49,25 @@ public class MainActivity extends Activity implements View.OnClickListener{
     private void initImageLoader(){
         // imageLoader配置
         DisplayImageOptions imageOptions = new DisplayImageOptions.Builder()
-                .cacheInMemory(true).cacheOnDisc(true).build();
+                .cacheInMemory(true).imageScaleType(ImageScaleType.EXACTLY)
+                .cacheOnDisk(true).build();
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(
-                this).defaultDisplayImageOptions(imageOptions)
+                this)
+                .threadPoolSize(3)
+                .threadPriority(Thread.NORM_PRIORITY - 2)
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .denyCacheImageMultipleSizesInMemory()
+                .defaultDisplayImageOptions(imageOptions)
                 .discCacheFileNameGenerator(new Md5FileNameGenerator())
-                .memoryCacheSize(2 * 1024 * 1024)
                 .memoryCache(new WeakMemoryCache())
+                .memoryCacheSize(2 * 1024 * 1024)
+                .memoryCacheSizePercentage(13)
+                .diskCacheSize(50 * 1024 * 1024).diskCacheFileCount(100)
                 .build();
         ImageLoader imageLoader = ImageLoader.getInstance();
         imageLoader.init(config);
+
+
     }
 
 
