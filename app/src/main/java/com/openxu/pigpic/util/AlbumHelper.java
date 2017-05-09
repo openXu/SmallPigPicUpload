@@ -201,9 +201,10 @@ public class AlbumHelper {
 				imageItem.imagePath = path;
 				imageItem.thumbnailPath = thumbnailList.get(_id);
 				total_count++;
-				if(total_count < 281) {
-					totalItems.add(imageItem);
-				}
+//				if(total_count < 281) {
+//					totalItems.add(imageItem);
+//				}
+				totalItems.add(imageItem);
 				bucket.imageList.add(imageItem);
 
 			} while (cur.moveToNext());

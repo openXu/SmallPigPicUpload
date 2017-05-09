@@ -66,6 +66,9 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Request;
 
+import static com.openxu.pigpic.view.HeaderGridView.STATUS_EIDT;
+import static com.openxu.pigpic.view.HeaderGridView.STATUS_SHOW;
+
 public class UploadPicActivity extends UploadPicBaseActivity implements View.OnClickListener{
 
     private ImageView iv_back;
@@ -82,6 +85,7 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
     private ArrayList<UploadPic> netPicList;
 
     private int lastKey = -1; // 最新的key
+    private boolean toEditAfterRefresh = false; // 刷新之后是否变为编辑状态
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,7 +122,11 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
                     //判断是否在上传队列
                     servie.deletePic(pic);
                 }
+                //值为为编辑状态，等刷新之后才能编辑
+                gridView.setEditStatus(STATUS_SHOW);
+                tv_edit.setEnabled(false);
                 deletePic(pic);
+                toEditAfterRefresh = true;
             }
 
             @Override
@@ -143,8 +151,12 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
             servie.setCallBack(new UploadCallBack() {
                 @Override
                 public void refreshPicPro(UploadPic pic) {
-//                    pic_layout.refreshChild(pic);
+                    //刷新正在上传的图片对应的控件
                     gridView.refreshChild(pic);
+                    if(pic.getStatus()==UploadPic.STATUS_SUCC){
+                        //由于图片上传成功之后，会从上传队列中清除，这时候需要重新获取服务器上的图片进行刷新
+                        getNetPic();
+                    }
                 }
             });
         }
@@ -161,6 +173,10 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
                 finish();
                 break;
             case R.id.tv_edit:
+                if(servie!=null && servie.getUploadingList(house_id).size()>0){
+                    Toast.makeText(mContext, "请上传完毕后在编辑",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 onstatusChange(false);
                 break;
             case R.id.tv_addpic:
@@ -175,9 +191,9 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
             case R.id.tv_choosepic_1:
                 Intent intent = new Intent(this, ChoosePhotoActivity.class);
                 //可选择图片的最大数(每次最多添加10张，一个房源总共30最多
-//                int max_number = 30 - pic_layout.getPicCount();
-//                intent.putExtra("max_number", max_number>10?10:(max_number<=0?0:max_number));
-                intent.putExtra("max_number", 10);
+                int max_number = 30 - gridView.getPicCount();
+                intent.putExtra("max_number", max_number>10?10:(max_number<=0?0:max_number));
+//                intent.putExtra("max_number", 10);
                 startActivityForResult(intent, 1);
                 ll_choosepic.setVisibility(View.GONE);
                 break;
@@ -389,6 +405,11 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
         }
         //绑定view
         gridView.showGridView(mergeList);
+        if(toEditAfterRefresh){
+            toEditAfterRefresh = false;
+            gridView.setEditStatus(STATUS_EIDT);
+            tv_edit.setEnabled(true);
+        }
 //        pic_layout.setViewData(mergeList);
     }
 
@@ -475,9 +496,10 @@ public class UploadPicActivity extends UploadPicBaseActivity implements View.OnC
                                     for(UploadPic picItem : netPicList){
                                         if(picItem.getKey() == pic.getKey()){
                                             netPicList.remove(picItem);
-                                            return;
+                                            break;
                                         }
                                     }
+                                    getNetPic();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();

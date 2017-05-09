@@ -95,7 +95,7 @@ public class PickPhotoUtil {
 			File imgFile = new File(path);
 			
 			if (null != imgFile) {
-
+/*
 				int currentapiVersion = android.os.Build.VERSION.SDK_INT;
 				Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 				if (currentapiVersion < 24) {
@@ -110,9 +110,9 @@ public class PickPhotoUtil {
 					}
 					captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
 					mActivity.startActivityForResult(captureIntent, PickPhotoCode.PICKPHOTO_TAKE);
-				}
+				}*/
 
-				/*Intent mIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+				Intent mIntent = new Intent("android.media.action.IMAGE_CAPTURE");
 				// Samsung的系统相机，版式是横板的,同时此activity不要设置单例模式
 //				if (OsBuild.isModel(OsBuild.Model.SAMSUNG_GT_S6)) {
 //					mIntent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
@@ -124,7 +124,7 @@ public class PickPhotoUtil {
 				mIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imgFile));
 				// 调用系统拍照
 				mActivity.startActivityForResult(mIntent,
-						PickPhotoCode.PICKPHOTO_TAKE);		*/
+						PickPhotoCode.PICKPHOTO_TAKE);
 				return imgFile.getAbsolutePath();
 			}
 			else {

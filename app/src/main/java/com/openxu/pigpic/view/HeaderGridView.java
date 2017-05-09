@@ -611,6 +611,21 @@ public class HeaderGridView extends GridView {
     }
 
     /**
+     * 获取已有图片数量
+     * @return
+     */
+    public int getPicCount(){
+        int count = 0;
+        if(headerView!=null && firstUploadPic!=null){
+            count += 1;
+        }
+        if(gridAdapter!=null){
+            count += gridAdapter.getCount();
+        }
+        return  count;
+    }
+
+    /**
      * 适配器
      */
     class MyPicHearderGridAdapter extends BaseAdapter {

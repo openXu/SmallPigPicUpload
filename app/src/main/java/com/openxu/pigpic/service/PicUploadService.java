@@ -116,7 +116,7 @@ public class PicUploadService extends Service {
 
 
     private boolean isUploading = false;
-    private ArrayList<UploadPic> picQue;
+    private ArrayList<UploadPic> picQue; //上传队列
     private int reLoadIndex = -1;   //重新上传的指针
     private int index = 0;
 
@@ -155,10 +155,13 @@ public class PicUploadService extends Service {
     };
 
 
+    /**
+     * 上传图片
+     * @param pic
+     */
     private void uploadPic(final UploadPic pic) {
 
         isUploading = true;
-
         Map<String, String> params = new HashMap<>();
         String url = Url.URL_PIC_UPLOAD;
         params.put("house_id", pic.getHouse_id());   //房源id

@@ -46,13 +46,10 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Request;
 
-
 /**
  * 此类作废
  */
 public class UploadPicActivity1 extends UploadPicBaseActivity implements View.OnClickListener{
-
-
 
     private ImageView iv_back;
     private TextView tv_edit;
