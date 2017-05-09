@@ -140,12 +140,12 @@ public class UpLoadPicLayout extends ViewGroup {
         UploadPic firstPic = picList.get(0);
         UpLoadPicView view = new UpLoadPicView(getContext());
         view.setEventCallBack(eventCallBack);
-        view.setViewData(firstPic);
 //        LogUtil.w(TAG, "设置第一个图片宽高："+firstItemW+"*"+firstItemH);
         view.measure(firstItemW, firstItemH);
         // 确定子控件的位置，四个参数分别代表（左上右下）点的坐标值
         addView(view);
         view.layout(space, space, space+firstItemW, space+firstItemH);
+        view.setViewData(firstPic);
 //        LogUtil.w(TAG, "第一个图片位置："+space+"*"+space+"*"+(space+firstItemW)+"*"+(space+firstItemH));
         top = firstItemH+space*2;
 
@@ -154,7 +154,6 @@ public class UpLoadPicLayout extends ViewGroup {
             UploadPic pic = picList.get(j);
             view = new UpLoadPicView(getContext());
             view.setEventCallBack(eventCallBack);
-            view.setViewData(pic);
 //            LogUtil.w(TAG, "设置图片宽高："+itemWH+"*"+itemWH);
             view.measure(itemWH, itemWH);
             if(lie<lieNum){
@@ -167,6 +166,7 @@ public class UpLoadPicLayout extends ViewGroup {
             }
             addView(view);
             view.layout(left, top, left+itemWH, top+itemWH);
+            view.setViewData(pic);
 //            LogUtil.w(TAG, "图片位置："+left+"*"+top+"*"+(itemWH+left)+"*"+(itemWH+top));
             lie++;
         }

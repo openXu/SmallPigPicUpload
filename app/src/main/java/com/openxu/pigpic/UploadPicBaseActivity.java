@@ -41,6 +41,7 @@ import java.util.Map;
 import okhttp3.Call;
 import okhttp3.Request;
 
+import static android.Manifest.permission.CAMERA;
 import static com.openxu.pigpic.UploadPicActivity.CATCH_DIR;
 
 /**
@@ -59,7 +60,8 @@ public class UploadPicBaseActivity extends Activity{
 
     static final String[] PERMISSION = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE, // 写入权限
-            Manifest.permission.READ_EXTERNAL_STORAGE  //读取权限
+            Manifest.permission.READ_EXTERNAL_STORAGE,  //读取权限
+            Manifest.permission.CAMERA
     };
 
     @Override

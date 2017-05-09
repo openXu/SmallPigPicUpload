@@ -3,12 +3,15 @@ package com.openxu.pigpic.util;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.Toast;
@@ -16,6 +19,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.FileInputStream;
 import java.lang.ref.SoftReference;
+import java.util.List;
 
 public class PickPhotoUtil {
 	
@@ -80,7 +84,7 @@ public class PickPhotoUtil {
 			Toast.makeText(mActivity, "未找到SD卡", Toast.LENGTH_LONG).show();
 		}		
 	}
-	
+
 	/**
 	 * 拍照选取
 	 * @param mActivity
@@ -91,7 +95,24 @@ public class PickPhotoUtil {
 			File imgFile = new File(path);
 			
 			if (null != imgFile) {
-				Intent mIntent = new Intent("android.media.action.IMAGE_CAPTURE");
+
+				int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+				Intent captureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+				if (currentapiVersion < 24) {
+					captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imgFile));
+					mActivity.startActivityForResult(captureIntent, PickPhotoCode.PICKPHOTO_TAKE);
+				} else {
+					Uri contentUri = FileProvider.getUriForFile(mActivity, "syberos.sdisframework.fileProvider", imgFile);
+					List<ResolveInfo> resInfoList = mActivity.getPackageManager().queryIntentActivities(captureIntent, PackageManager.MATCH_DEFAULT_ONLY);
+					for (ResolveInfo resolveInfo : resInfoList) {
+						String packageName = resolveInfo.activityInfo.packageName;
+						mActivity.grantUriPermission(packageName, contentUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+					}
+					captureIntent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+					mActivity.startActivityForResult(captureIntent, PickPhotoCode.PICKPHOTO_TAKE);
+				}
+
+				/*Intent mIntent = new Intent("android.media.action.IMAGE_CAPTURE");
 				// Samsung的系统相机，版式是横板的,同时此activity不要设置单例模式
 //				if (OsBuild.isModel(OsBuild.Model.SAMSUNG_GT_S6)) {
 //					mIntent.putExtra(MediaStore.Images.Media.ORIENTATION, 0);
@@ -103,16 +124,13 @@ public class PickPhotoUtil {
 				mIntent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imgFile));
 				// 调用系统拍照
 				mActivity.startActivityForResult(mIntent,
-						PickPhotoCode.PICKPHOTO_TAKE);		
+						PickPhotoCode.PICKPHOTO_TAKE);		*/
 				return imgFile.getAbsolutePath();
 			}
 			else {
 				Log.e(TAG, "创建图片对象有误");
 				Toast.makeText(mActivity, "创建图片对象有误", Toast.LENGTH_LONG).show();
 			}			
-			
-			
-			
 		} else {
 			Log.e(TAG, "未找到SD卡");
 			Toast.makeText(mActivity, "未找到SD卡", Toast.LENGTH_LONG).show();

@@ -35,18 +35,20 @@
             android:text="编辑"/>
     </RelativeLayout>
 
-    <com.openxu.pigpic.view.HeaderGridView
-        android:id="@+id/gridView"
+    <ScrollView
+        android:fillViewport="true"
         android:layout_above="@+id/tv_addpic"
         android:layout_below="@+id/rl_title"
-        android:layout_margin="10dip"
-        android:horizontalSpacing="10dip"
-        android:verticalSpacing="10dip"
-        android:numColumns="3"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        <com.openxu.pigpic.view.UpLoadPicLayout
+            android:id="@+id/pic_layout"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-    </com.openxu.pigpic.view.HeaderGridView>
+        </com.openxu.pigpic.view.UpLoadPicLayout>
+    </ScrollView>
 
     <TextView
         android:id="@+id/tv_addpic"

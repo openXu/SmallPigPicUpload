@@ -67,6 +67,10 @@ public class PicUploadService extends Service {
             return list;
         }
 
+        /**
+         * 删除队列中的某个图片
+         * @param pic
+         */
         public void deletePic(UploadPic pic){
             for(int i = 0 ;i <picQue.size(); i++){
                 UploadPic picItem = picQue.get(i);
@@ -78,6 +82,25 @@ public class PicUploadService extends Service {
                         index -=1;
                     }
                     picQue.remove(i);
+                    break;
+                }
+            }
+        }
+        /**
+         * 重新上传，将指针index指向该图片
+         * @param pic
+         */
+        public void onReUpload(UploadPic pic){
+            for(int i = 0 ;i <picQue.size(); i++){
+                UploadPic picItem = picQue.get(i);
+                if(picItem.getHouse_id().equals(pic.getHouse_id())
+                        && picItem.getKey() == pic.getKey()){
+                    if(picItem.getStatus() == UploadPic.STATUS_FAIL){
+                        //只需要将reLoadIndex指向该图片即可
+                        reLoadIndex = i;
+                        handler.sendEmptyMessage(0);
+                        return;
+                    }
                     break;
                 }
             }
@@ -94,6 +117,7 @@ public class PicUploadService extends Service {
 
     private boolean isUploading = false;
     private ArrayList<UploadPic> picQue;
+    private int reLoadIndex = -1;   //重新上传的指针
     private int index = 0;
 
     @Override
@@ -108,6 +132,10 @@ public class PicUploadService extends Service {
         @Override
         public void handleMessage(Message msg) {
             if (msg.what==0 && !isUploading){
+                if(reLoadIndex>=0){
+                    index = reLoadIndex;
+                    reLoadIndex = -1;
+                }
                 if(picQue.size()>0 &&  index<picQue.size()){
                     UploadPic pic = picQue.get(index);
                     //如果上传成功的，上传下一个
@@ -122,34 +150,6 @@ public class PicUploadService extends Service {
                     LogUtil.e(TAG, "一轮上传完毕了");
                     index = 0;
                 }
-/*
-                if(index.size()>0 && index1<idList.size()){
-                    String house_id = idList.get(index1);
-                    ArrayList<UploadPic> picList = picMap.get(house_id);
-                    if(picList!=null && picList.size()>0 && index2<picList.size()){
-                        UploadPic pic = picList.get(index2);
-                        upload(house_id, index2+"", pic);
-                        LogUtil.i(TAG, "开始上传house_id＝"+house_id+"的第"+index2+"张"+pic.getName());
-                        index2 ++;
-                    }else{
-                        if(allSucc){
-                            //上一个全部上传成功，清楚
-                            idList.remove(index1);
-                            picMap.remove(house_id);
-                        }else{
-                            index1++;
-                        }
-                        //开始上传下一个
-                        index2 = 0;
-                        allSucc = true;
-                        LogUtil.w(TAG, "开始上传下一个房源图片index1＝"+index1);
-                        handler.sendEmptyMessage(0);
-                    }
-                }else{
-                    index1 =0;
-//                    handler.sendEmptyMessage(0);
-                    LogUtil.w(TAG, "所有房源图片上传完毕");
-                }*/
             }
         }
     };
