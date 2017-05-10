@@ -6,7 +6,7 @@ import com.openxu.pigpic.bean.UploadPic;
  * author : openXu
  * created time : 17/5/8 下午10:20
  * class name : ImageViewEventCallBack
- * discription :
+ * discription :上传控件事件回调接口
  */
 public interface ImageViewEventCallBack {
 
