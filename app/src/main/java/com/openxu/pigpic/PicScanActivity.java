@@ -28,7 +28,6 @@ import java.util.List;
  */
 public class PicScanActivity extends Activity implements View.OnClickListener{
 
-
     private String  TAG = "PicScanActivity";
     private ViewPager viewpager;
     private ImageView iv_back;

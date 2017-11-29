@@ -121,7 +121,7 @@ public class ChoosePhotoActivity extends UploadPicBaseActivity implements View.O
 		optionBtmap = BitmapFactory.decodeResource(getResources(),R.drawable.choosepic_icon_def);
 		helper = AlbumHelper.getHelper();
 		helper.init(getApplicationContext());
-		
+
 		gridAdapter = new GridAdapter();
 		gridview.setAdapter(gridAdapter);
 
@@ -137,7 +137,7 @@ public class ChoosePhotoActivity extends UploadPicBaseActivity implements View.O
 				.build();
 
 		getImages();
-		
+
 	}
 
 
@@ -195,13 +195,13 @@ public class ChoosePhotoActivity extends UploadPicBaseActivity implements View.O
 		protected void onPreExecute() {
 			super.onPreExecute();
 		}
-		
+
 		@Override
 		protected List<ImageBucket> doInBackground(Void... arg0) {
 			List<ImageBucket> imagesBucketList = helper.getImagesBucketList(false);
 			return imagesBucketList;
 		}
-		
+
 		@Override
 		protected void onPostExecute(List<ImageBucket> result) {
 //			LogUtil.e(TAG, "系统中所有图片数量="+helper.totalItems.size());
@@ -251,7 +251,7 @@ public class ChoosePhotoActivity extends UploadPicBaseActivity implements View.O
 			imageList = new ArrayList<>();
 			inflater = LayoutInflater.from(ChoosePhotoActivity.this);
 		}
-		
+
 		BitmapCache.ImageCallback callback = new BitmapCache.ImageCallback() {
 			@Override
 			public void imageLoad(ImageView imageView, Bitmap bitmap,
